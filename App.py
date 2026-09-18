@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException 
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel 
 import joblib 
 import numpy as np 
@@ -8,6 +9,21 @@ app = FastAPI(
     description="Machine Learning Model deployed using FastAPI",    
     version="1.0.0" 
     )
+
+# Allows the deployed Vercel frontend and local Vite development server to call
+# this API from a different origin. This middleware must be deployed to Render.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://wine-quality-theta.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:5175",
+    ],
+    allow_credentials=False,
+    allow_methods=["POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
+)
 
 # FILE_ID = "1hV1f-PX8lYDpYneNMwuuf64U0I2Ni8lV"
 # MODEL_PATH = "model.pkl"
